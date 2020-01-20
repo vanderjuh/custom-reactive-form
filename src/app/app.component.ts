@@ -32,7 +32,7 @@ export class AppComponent {
     this.mock = Object.assign(new TextField(), {
       name: 'Nome do convidado',
       description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      required: false,
+      required: true,
       textValue: 'Vanderley Sousa',
       observation: 'Good guy'
     });

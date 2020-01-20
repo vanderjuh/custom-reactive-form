@@ -1,21 +1,18 @@
-<mat-card fxLayout="column" fxLayoutAlign="start none">
+<mat-card [formGroup]="form" fxLayout="column" fxLayoutAlign="start none">
     <span class="title" fxLayout="row" fxLayoutAlign="space-between center">
         <span>
             <span>{{fieldValue.name}}</span>
             <span *ngIf="fieldValue.required" class="is-required">*</span>
         </span>
-        <button class="btn-menu" mat-icon-button [matMenuTriggerFor]="menuField">
-            <mat-icon>more_vert</mat-icon>
-        </button>
     </span>
     <span class="description">{{fieldValue.description}}</span>
     <mat-form-field>
-        <textarea #textValue matInput placeholder="Texto" (input)="changeValuesForm()" (focusout)="emitSaveFieldEvent()"></textarea>
+        <textarea formControlName="textValue" matInput placeholder="Texto" (input)="changeValuesForm()"
+            (focusout)="emitSaveFieldEvent()"></textarea>
+        <mat-error *ngIf="form.get('textValue').hasError('required')">Preenchimento obrigatório</mat-error>
     </mat-form-field>
     <mat-form-field>
-        <textarea #observation matInput placeholder="Observação" (input)="changeValuesForm()" (focusout)="emitSaveFieldEvent()"></textarea>
+        <textarea formControlName="observation" matInput placeholder="Observação" (input)="changeValuesForm()"
+            (focusout)="emitSaveFieldEvent()"></textarea>
     </mat-form-field>
 </mat-card>
-<mat-menu #menuField="matMenu">
-    <button mat-menu-item>Adicionar observação</button>
-</mat-menu>

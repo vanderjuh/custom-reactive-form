@@ -1,5 +1,5 @@
-import { Component, forwardRef, Renderer2, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Output, EventEmitter } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TextField } from 'src/app/text-field.class';
 
 const CUSTOM_VALUE_ACCESSOR: any = {
@@ -17,34 +17,42 @@ const CUSTOM_VALUE_ACCESSOR: any = {
 export class TextFieldComponent implements ControlValueAccessor {
 
   @Output() saveField = new EventEmitter<TextField>();
-  @ViewChild('textValue', { static: true }) textValue: ElementRef;
-  @ViewChild('observation', { static: true }) observation: ElementRef;
 
-  fieldValue: TextField;
+  form: FormGroup;
+
+  get fieldValue(): TextField {
+    return this.form.getRawValue();
+  }
 
   private onChange: (_: any) => void;
   private onTouched: () => void;
   private disabled: boolean;
 
   constructor(
-    private renderer: Renderer2
+    private formBuilder: FormBuilder
   ) {
     this.onChange = (_: any) => { };
     this.onTouched = () => { };
     this.disabled = false;
+    this.form = this.formBuilder.group({
+      name: new FormControl(null),
+      description: new FormControl(null),
+      required: new FormControl(null),
+      textValue: new FormControl(null),
+      observation: new FormControl(null)
+    });
   }
 
   writeValue(value: TextField): void {
     if (!value) {
       return;
     }
-
-    const tv = this.textValue.nativeElement;
-    const ob = this.observation.nativeElement;
-
-    this.fieldValue = value;
-    this.renderer.setProperty(tv, 'textContent', value.textValue);
-    this.renderer.setProperty(ob, 'textContent', value.observation);
+    this.form.patchValue(value);
+    const validators = [];
+    if (value.required) {
+      validators.push(Validators.required);
+    }
+    this.form.get('textValue').setValidators(validators);
   }
 
   registerOnChange(fn: any): void {
@@ -60,14 +68,14 @@ export class TextFieldComponent implements ControlValueAccessor {
   }
 
   private factoryTextField(): TextField {
-    const changedValue = Object.assign(new TextField(), this.fieldValue);
-    changedValue.textValue = this.textValue.nativeElement.value;
-    changedValue.observation = this.observation.nativeElement.value;
+    const changedValue = Object.assign(new TextField(), this.form.getRawValue());
     return changedValue;
   }
 
   emitSaveFieldEvent(): void {
-    this.saveField.emit(this.factoryTextField());
+    if (this.form.valid) {
+      this.saveField.emit(this.factoryTextField());
+    }
   }
 
   private changeValuesForm(): void {

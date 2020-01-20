@@ -21,3 +21,7 @@ mat-card {
     text-align: justify;
     margin-bottom: 10px;
 }
+
+mat-form-field{
+    margin-bottom: 10px;
+}
