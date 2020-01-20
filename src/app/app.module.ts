@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TextFieldComponent } from './fields/inspection/text-field/text-field.component';
+import { TextFieldComponent } from './fields/text-field/text-field.component';
 
 @NgModule({
   declarations: [
